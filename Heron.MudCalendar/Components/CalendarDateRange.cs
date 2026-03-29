@@ -19,6 +19,8 @@ public class CalendarDateRange : DateRange
             case CalendarView.Week:
             case CalendarView.WorkWeek:
                 return GetFirstWeekDate(currentDay, culture, firstDayOfWeek);
+            case CalendarView.Year:
+                return culture.Calendar.ToDateTime(culture.Calendar.GetYear(currentDay), 1, 1, 0, 0, 0, 0);
             case CalendarView.Month:
             default:
                 return GetFirstMonthDate(currentDay, culture, firstDayOfWeek);
@@ -35,6 +37,13 @@ public class CalendarDateRange : DateRange
                 return GetLastWeekDate(currentDay, culture, firstDayOfWeek);
             case CalendarView.WorkWeek:
                 return GetLastWorkWeekDate(currentDay, culture, firstDayOfWeek);
+            case CalendarView.Year:
+            {
+                var year = culture.Calendar.GetYear(currentDay);
+                var monthsInYear = culture.Calendar.GetMonthsInYear(year);
+                var daysInLastMonth = culture.Calendar.GetDaysInMonth(year, monthsInYear);
+                return culture.Calendar.ToDateTime(year, monthsInYear, daysInLastMonth, 0, 0, 0, 0);
+            }
             case CalendarView.Month:
             default:
                 return GetLastMonthDate(currentDay, culture, firstDayOfWeek);

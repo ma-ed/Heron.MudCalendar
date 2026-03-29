@@ -211,6 +211,16 @@ public partial class MudCalendar<[DynamicallyAccessedMembers(DynamicallyAccessed
     public bool ShowMonth { get; set; } = true;
 
     /// <summary>
+    /// If true, the year view is shown.
+    /// </summary>
+    /// <remarks>
+    /// Defaults to <c>false</c>.
+    /// </remarks>
+    [Parameter]
+    [Category(CategoryTypes.Calendar.Behavior)]
+    public bool ShowYear { get; set; }
+
+    /// <summary>
     /// If false, then the prev/next buttons are not shown.
     /// </summary>
     /// <remarks>
@@ -456,6 +466,16 @@ public partial class MudCalendar<[DynamicallyAccessedMembers(DynamicallyAccessed
     [Category(CategoryTypes.Calendar.Template)]
     [Parameter]
     public RenderFragment<T>? DayTemplate { get; set; }
+
+    /// <summary>
+    /// Defines the content rendered inside each event bar in the Year view.
+    /// </summary>
+    /// <remarks>
+    /// Defaults to <c>null</c>, which shows the item's <see cref="CalendarItem.Text"/>.
+    /// </remarks>
+    [Category(CategoryTypes.Calendar.Template)]
+    [Parameter]
+    public RenderFragment<T>? YearTemplate { get; set; }
     
     /// <summary>
     /// Custom content to appear in the toolbar of the component.
@@ -602,13 +622,14 @@ public partial class MudCalendar<[DynamicallyAccessedMembers(DynamicallyAccessed
                 CalendarView.Week => "Week",
                 CalendarView.WorkWeek => "Work Week",
                 CalendarView.Month => "Month",
+                CalendarView.Year => "Year",
                 _ => throw new ArgumentOutOfRangeException()
             };
 
             return label;
         }
     }
-    
+
     protected virtual string NextAriaLabel
     {
         get
@@ -620,9 +641,10 @@ public partial class MudCalendar<[DynamicallyAccessedMembers(DynamicallyAccessed
                 CalendarView.Week => "Week",
                 CalendarView.WorkWeek => "Work Week",
                 CalendarView.Month => "Month",
+                CalendarView.Year => "Year",
                 _ => throw new ArgumentOutOfRangeException()
             };
-            
+
             return label;
         }
     }
@@ -643,12 +665,14 @@ public partial class MudCalendar<[DynamicallyAccessedMembers(DynamicallyAccessed
         if ((View == CalendarView.Day && !ShowDay)
             || (View == CalendarView.Week && !ShowWeek)
             || (View == CalendarView.WorkWeek && !ShowWorkWeek)
-            || (View == CalendarView.Month && !ShowMonth))
+            || (View == CalendarView.Month && !ShowMonth)
+            || (View == CalendarView.Year && !ShowYear))
         {
             if (ShowMonth) View = CalendarView.Month;
             if (ShowWeek) View = CalendarView.Week;
             if (ShowWorkWeek) View = CalendarView.WorkWeek;
             if (ShowDay) View = CalendarView.Day;
+            if (ShowYear) View = CalendarView.Year;
         }
     }
 
@@ -709,7 +733,8 @@ public partial class MudCalendar<[DynamicallyAccessedMembers(DynamicallyAccessed
             CalendarView.Day => CurrentDay.AddDays(1),
             CalendarView.Week => CurrentDay.AddDays(7),
             CalendarView.WorkWeek => CurrentDay.AddDays(7),
-            CalendarView.Month => Culture.Calendar.AddMonths(CurrentDay,1),
+            CalendarView.Month => Culture.Calendar.AddMonths(CurrentDay, 1),
+            CalendarView.Year => Culture.Calendar.AddYears(CurrentDay, 1),
             _ => CurrentDay
         };
         
@@ -730,6 +755,7 @@ public partial class MudCalendar<[DynamicallyAccessedMembers(DynamicallyAccessed
             CalendarView.Week => CurrentDay.AddDays(-7),
             CalendarView.WorkWeek => CurrentDay.AddDays(-7),
             CalendarView.Month => Culture.Calendar.AddMonths(CurrentDay, -1),
+            CalendarView.Year => Culture.Calendar.AddYears(CurrentDay, -1),
             _ => CurrentDay
         };
 
@@ -838,6 +864,7 @@ public partial class MudCalendar<[DynamicallyAccessedMembers(DynamicallyAccessed
         if (ShowWeek) list.Add(CalendarView.Week);
         if (ShowWorkWeek) list.Add(CalendarView.WorkWeek);
         if (ShowMonth) list.Add(CalendarView.Month);
+        if (ShowYear) list.Add(CalendarView.Year);
         return list;
     }
 

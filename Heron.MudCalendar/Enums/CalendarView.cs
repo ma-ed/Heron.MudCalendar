@@ -6,4 +6,5 @@ public enum CalendarView
     Week,
     WorkWeek,
     Day,
+    Year,
 }

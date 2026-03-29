@@ -11,4 +11,7 @@
     <data name="WorkWeek" xml:space="preserve">
         <value>Work week</value>
     </data>
+    <data name="Year" xml:space="preserve">
+        <value>Year</value>
+    </data>
 </root>

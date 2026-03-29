@@ -1,0 +1,138 @@
+@namespace Heron.MudCalendar
+@inherits CalendarViewBase<T>
+@typeparam T
+
+@Render
+
+@code {
+
+    /// <summary>
+    /// Renders the year view.
+    /// </summary>
+    protected virtual RenderFragment Render => __builder =>
+    {
+        <div class="mud-cal-year-view">
+            @if (MonthRows.Count > 0)
+            {
+                @RenderHeader
+                @RenderMonthRows
+            }
+        </div>
+    };
+
+    /// <summary>
+    /// Renders the day-of-week header row (S M T W T F S × 6).
+    /// </summary>
+    protected virtual RenderFragment RenderHeader => __builder =>
+    {
+        var firstRow = MonthRows[0];
+        <div class="mud-cal-year-header-row">
+            <div class="mud-cal-year-month-label mud-cal-year-month-label-header"></div>
+            <div class="mud-cal-year-header-cells">
+                @for (var i = 0; i < 42; i++)
+                {
+                    var headerDate = firstRow.GridStart.AddDays(i);
+                    <div class="mud-cal-year-header-cell" aria-label="@headerDate.ToString("dddd", Calendar.Culture)">
+                        @headerDate.ToString("ddd", Calendar.Culture)[..1]
+                    </div>
+                }
+            </div>
+        </div>
+    };
+
+    /// <summary>
+    /// Renders all 12 month rows.
+    /// </summary>
+    protected virtual RenderFragment RenderMonthRows => __builder =>
+    {
+        foreach (var monthData in MonthRows)
+        {
+            @RenderMonthRow(monthData)
+        }
+    };
+
+    /// <summary>
+    /// Renders a single month row: label + day cells + event bars.
+    /// </summary>
+    protected virtual RenderFragment RenderMonthRow(YearMonthData<T> monthData) => __builder =>
+    {
+        var minHeight = RowMinHeight(monthData);
+        <div class="mud-cal-year-month-row">
+            <div class="mud-cal-year-month-label" aria-label="@monthData.MonthStart.ToString("MMMM yyyy", Calendar.Culture)">
+                @monthData.MonthStart.ToString("MMM", Calendar.Culture)
+            </div>
+            <div class="mud-cal-year-cells-container" style="min-height: @(minHeight)px;">
+                <div class="mud-cal-year-cells-grid">
+                    @foreach (var cell in monthData.Cells)
+                    {
+                        @RenderDayCell(cell)
+                    }
+                </div>
+                @foreach (var bar in monthData.EventBars)
+                {
+                    @RenderEventBar(bar)
+                }
+            </div>
+        </div>
+    };
+
+    /// <summary>
+    /// Renders a single day cell showing the day number.
+    /// </summary>
+    protected virtual RenderFragment RenderDayCell(CalendarCell<T> cell) => __builder =>
+    {
+        if (Calendar.CellClicked.HasDelegate && !cell.Outside
+            && (Calendar.IsDateTimeDisabledFunc == null || !Calendar.IsDateTimeDisabledFunc(cell.Date, CalendarView.Year)))
+        {
+            <div class="@DayCellClassname(cell)" @onclick="() => OnCellClicked(cell)">
+                <div class="mud-cal-year-day-number">@cell.Date.Day</div>
+            </div>
+        }
+        else
+        {
+            <div class="@DayCellClassname(cell)">
+                @if (!cell.Outside)
+                {
+                    <div class="mud-cal-year-day-number">@cell.Date.Day</div>
+                }
+            </div>
+        }
+    };
+
+    /// <summary>
+    /// Renders an event bar absolutely positioned within the month row.
+    /// </summary>
+    protected virtual RenderFragment RenderEventBar(ItemPosition<T> position) => __builder =>
+    {
+        var item = position.Item;
+        if (Calendar.ItemClicked.HasDelegate)
+        {
+            <div class="mud-cal-year-event-bar mud-cal-clickable" style="@EventBarStyle(position)"
+                 @onclick="() => OnItemClicked(item)" @onclick:stopPropagation="true">
+                @RenderEventBarContent(item)
+            </div>
+        }
+        else
+        {
+            <div class="mud-cal-year-event-bar" style="@EventBarStyle(position)">
+                @RenderEventBarContent(item)
+            </div>
+        }
+    };
+
+    /// <summary>
+    /// Renders the content inside an event bar. Uses YearTemplate if provided, otherwise a simple text label.
+    /// </summary>
+    protected virtual RenderFragment RenderEventBarContent(T item) => __builder =>
+    {
+        if (Calendar.YearTemplate != null)
+        {
+            @Calendar.YearTemplate(item)
+        }
+        else
+        {
+            <span class="mud-cal-year-event-text">@item.Text</span>
+        }
+    };
+
+}

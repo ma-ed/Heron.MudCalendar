@@ -1,0 +1,159 @@
+.mud-cal-year-view {
+  height: 100%;
+  overflow-y: auto;
+}
+
+// ── Header row (day-of-week labels) ──────────────────────────────────────────
+
+.mud-cal-year-header-row {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid var(--mud-palette-table-lines);
+  position: sticky;
+  top: 0;
+  background-color: var(--mud-palette-surface);
+  z-index: 1;
+}
+
+.mud-cal-year-header-cells {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(42, minmax(0, 1fr));
+}
+
+.mud-cal-year-header-cell {
+  text-align: center;
+  font-weight: 500;
+  font-size: 0.75rem;
+  padding: 4px 0;
+  color: var(--mud-palette-text-secondary);
+}
+
+// ── Month rows ────────────────────────────────────────────────────────────────
+
+.mud-cal-year-month-row {
+  display: flex;
+  flex-direction: row;
+  border-top: 1px solid var(--mud-palette-table-lines);
+
+  &:first-of-type {
+    border-top: none;
+  }
+}
+
+// Month name label (left column, fixed width)
+.mud-cal-year-month-label {
+  width: 48px;
+  min-width: 48px;
+  flex-shrink: 0;
+  padding: 6px 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-align: center;
+  border-right: 1px solid var(--mud-palette-table-lines);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  &.mud-cal-year-month-label-header {
+    // Empty spacer in the header row — same width as month labels
+    border-right: 1px solid var(--mud-palette-table-lines);
+  }
+}
+
+// ── Day cells area ────────────────────────────────────────────────────────────
+
+.mud-cal-year-cells-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.mud-cal-year-cells-grid {
+  display: grid;
+  grid-template-columns: repeat(42, minmax(0, 1fr));
+  width: 100%;
+}
+
+.mud-cal-year-day-cell {
+  border-right: 1px solid var(--mud-palette-table-lines);
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  position: relative;
+
+  &:last-child {
+    border-right: none;
+  }
+}
+
+.mud-cal-year-day-number {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 200ms ease;
+}
+
+.mud-cal-year-outside {
+  .mud-cal-year-day-number {
+    color: var(--mud-palette-text-disabled);
+  }
+}
+
+.mud-cal-year-today {
+  .mud-cal-year-day-number {
+    background-color: var(--mud-palette-primary);
+    color: var(--mud-palette-primary-text);
+    font-weight: 600;
+  }
+}
+
+.mud-cal-year-link {
+  cursor: pointer;
+  transition: background-color 200ms ease;
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.04);
+    }
+  }
+}
+
+// ── Event bars ────────────────────────────────────────────────────────────────
+
+.mud-cal-year-event-bar {
+  position: absolute;
+  height: 20px;
+  border-radius: 3px;
+  background-color: var(--mud-palette-primary);
+  color: var(--mud-palette-primary-text);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 0 4px;
+  font-size: 0.7rem;
+  box-sizing: border-box;
+
+  &.mud-cal-clickable {
+    cursor: pointer;
+    transition: filter 150ms ease;
+
+    @media (hover: hover) {
+      &:hover {
+        filter: brightness(0.9);
+      }
+    }
+  }
+}
+
+.mud-cal-year-event-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

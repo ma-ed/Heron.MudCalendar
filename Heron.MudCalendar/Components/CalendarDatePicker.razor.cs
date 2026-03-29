@@ -36,6 +36,9 @@ public partial class CalendarDatePicker
                             range.Start, range.End);
                     }
 
+                case CalendarView.Year:
+                    return Date.Value.ToString("yyyy", GetCulture());
+
                 case CalendarView.Month:
                 default:
                     return Date.Value.ToString("MMMM yyyy", GetCulture());
